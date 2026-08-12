@@ -13,10 +13,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/events")
 public class MeteringController {
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, ApiUsageEvent> kafkaTemplate;
     private static final String TOPIC = "api-usage-events";
 
-    public MeteringController(KafkaTemplate<String, Object> kafkaTemplate) {
+    public MeteringController(KafkaTemplate<String, ApiUsageEvent> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
