@@ -18,5 +18,7 @@ build/
 *.jar
 
 # Environment & Logs
+logs/
 *.log
 .env
+
