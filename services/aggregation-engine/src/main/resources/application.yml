@@ -19,8 +19,6 @@ spring:
       consumer:
         group-id: aggregation-group
         auto-offset-reset: earliest
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 eureka:
   client:
     serviceUrl:
