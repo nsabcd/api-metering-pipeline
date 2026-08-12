@@ -1,4 +1,16 @@
+server:
+  port: 8761
+
 spring:
+  application:
+    name: discovery-server
   threads:
     virtual:
       enabled: true
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
