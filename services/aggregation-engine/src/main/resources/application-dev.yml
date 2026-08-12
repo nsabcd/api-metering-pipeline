@@ -22,7 +22,10 @@ spring:
     flyway:
       enabled: true
       baseline-on-migrate: true
-      locations: classpath:db/migration
+      locations:
+        - classpath:db/migration      # 1. Runs V1
+        - classpath:db/dev-migration  # 2. Runs V2 (Dev overrides, seeding, instant refresh)
+      out-of-order: true
 
     kafka:
       bootstrap-servers: localhost:9092

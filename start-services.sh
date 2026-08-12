@@ -39,7 +39,7 @@ echo "Starting event-metering-service..."
 java -jar services/event-metering-service/target/event-metering-service-0.0.1-SNAPSHOT.jar > logs/event-metering-service.log 2>&1 &
 
 echo "Starting aggregation-engine..."
-java -jar services/aggregation-engine/target/aggregation-engine-0.0.1-SNAPSHOT.jar > logs/aggregation-engine.log 2>&1 &
+java -jar -Dspring.profiles.active=dev services/aggregation-engine/target/aggregation-engine-0.0.1-SNAPSHOT.jar > logs/aggregation-engine.log 2>&1 &
 
 echo "Starting invoice-generator..."
 java -jar services/invoice-generator/target/invoice-generator-0.0.1-SNAPSHOT.jar > logs/invoice-generator.log 2>&1 &
