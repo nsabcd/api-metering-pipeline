@@ -28,7 +28,7 @@ public class MeteringController {
                 event.responseTimeMs(),
                 event.tokensUsed(),
                 event.statusCode(),
-                event.timeStamp()!=null?event.timeStamp(): Instant.now();
+                event.timeStamp()!=null?event.timeStamp(): Instant.now()
         );
 
         kafkaTemplate.send(TOPIC, enrichedEvent.customerId(), enrichedEvent);
