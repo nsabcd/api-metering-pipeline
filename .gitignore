@@ -1,0 +1,22 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project/
+
+# Java Build Tools
+target/
+build/
+.gradle/
+*.class
+*.jar
+
+# Environment & Logs
+*.log
+.env
