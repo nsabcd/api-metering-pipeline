@@ -11,7 +11,12 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: event:com.metering.events.dto.ApiUsageEvent
+        spring.json.add.type.headers: true
+        #Setting type headers allows downstream consumers (like aggregation-engine) to automatically deserialize
+        #the payload into Java DTOs using Spring Kafka without needing manual byte-array parsing.
 eureka:
   client:
     serviceUrl:
