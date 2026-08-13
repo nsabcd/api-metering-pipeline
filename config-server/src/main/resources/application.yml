@@ -1,4 +1,22 @@
+server:
+  port: 8888
+
 spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          # Points to local YAML configurations stored in classpath or filesystem
+          search-locations: classpath:/config
   threads:
     virtual:
       enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

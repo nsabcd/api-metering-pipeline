@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/metering_db
     username: postgres
-    password: postgrespassword
+    password: password
     driver-class-name: org.postgresql.Driver
 
     jpa:
@@ -19,7 +19,7 @@ spring:
         ddl-auto: validate # Flyway manages schema, JPA only validates
       show-sql: false
 
-    flyway:
+  flyway:
       enabled: true
       baseline-on-migrate: true
       locations:
@@ -27,7 +27,7 @@ spring:
         - classpath:db/dev-migration  # 2. Runs V2 (Dev overrides, seeding, instant refresh)
       out-of-order: true
 
-    kafka:
+  kafka:
       bootstrap-servers: localhost:9092
       consumer:
         group-id: aggregation-group
