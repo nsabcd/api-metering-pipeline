@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/metering_db
     username: postgres
-    password: postgrespassword
+    password: password
 jpa:
   hibernate:
     ddl-auto: update
