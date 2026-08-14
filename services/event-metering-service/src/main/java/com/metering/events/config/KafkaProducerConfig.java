@@ -1,5 +1,6 @@
 package com.metering.events.config;
 
+import org.apache.kafka.common.serialization.Serializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -11,13 +12,15 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.ProducerFactory;
+import org.apache.kafka.common.serialization.StringSerializer;
+import java.util.function.Supplier;
 
 import java.util.Map;
 
-@Configuration
+
 public class KafkaProducerConfig {
 
-    @Bean
+
     public ProducerFactory<String, ApiUsageEvent> producerFactory(KafkaProperties kafkaProperties){
         Map<String, Object> configProps = kafkaProperties.buildProducerProperties(null);
 
@@ -29,17 +32,22 @@ public class KafkaProducerConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        JsonSerializer<ApiUsageEvent> jsonSerializer  = new JsonSerializer<>(objectMapper);
-        jsonSerializer.setAddTypeInfo(true);
+        // Explicitly type the Suppliers to prevent generic type inference issues
+        Supplier<Serializer<String>> keySerializerSupplier = StringSerializer::new;
+        Supplier<Serializer<ApiUsageEvent>> valueSerializerSupplier = () -> {
+            JsonSerializer<ApiUsageEvent> serializer = new JsonSerializer<>(objectMapper);
+            serializer.setAddTypeInfo(true);
+            return serializer;
+        };
 
         return new DefaultKafkaProducerFactory<>(
                 configProps,
-                null,// Uses default StringSerializer configured in YAML
-                jsonSerializer
+                keySerializerSupplier,
+                valueSerializerSupplier
         );
     }
 
-    @Bean
+
     public KafkaTemplate<String, ApiUsageEvent> kafkaTemplate(ProducerFactory<String, ApiUsageEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
