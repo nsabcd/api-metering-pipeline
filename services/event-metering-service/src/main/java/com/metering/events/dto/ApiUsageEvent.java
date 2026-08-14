@@ -8,6 +8,6 @@ public record ApiUsageEvent(
         long responseTimeMs,
         long tokensUsed,
         int statusCode,
-        Instant timeStamp
+        Instant timestamp
 ) {
 }

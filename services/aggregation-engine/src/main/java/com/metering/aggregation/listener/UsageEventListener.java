@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 public class UsageEventListener {
     private static final Logger log = LoggerFactory.getLogger(UsageEventListener.class);
@@ -26,6 +28,9 @@ public class UsageEventListener {
         log.info("Received event for Customer: [{}] | Endpoint: [{}] | Tokens: [{}]",
                 event.customerId(), event.apiEndpoint(), event.tokensUsed());
 
+        // Fallback to current UTC Instant if incoming record timestamp is null
+        Instant eventTimestamp = event.timestamp() != null ? event.timestamp() : Instant.now();
+
         UsageEventEntity usageEventEntity = new UsageEventEntity(
                 event.eventId(),
                 event.customerId(),
@@ -33,7 +38,7 @@ public class UsageEventListener {
                 event.responseTimeMs(),
                 event.tokensUsed(),
                 event.statusCode(),
-                event.timestamp()
+                eventTimestamp
         );
 
         repository.save(usageEventEntity);
