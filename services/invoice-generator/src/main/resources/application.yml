@@ -11,24 +11,28 @@ spring:
     url: jdbc:postgresql://localhost:5432/metering_db
     username: postgres
     password: password
-jpa:
-  hibernate:
-    ddl-auto: update
-  show-sql: false
+  sql:
+    init:
+      mode: always # Forces Spring Boot to initialize database schemas
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
 
-quartz:
-  job-store-type: jdbc
-  jdbc:
-    initialize-schema: ALWAYS # Auto-creates QRTZ_* tables in PostgreSQL
-  properties:
-    org.quartz.scheduler.instanceName: InvoiceScheduler
-    org.quartz.scheduler.instanceId: AUTO
-    org.quartz.jobStore.class: org.quartz.impl.jdbcjobstore.JobStoreTX
-    org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
-    org.quartz.jobStore.useProperties: false
-    org.quartz.jobStore.tablePrefix: QRTZ_
-    org.quartz.jobStore.isClustered: true # Enables cluster locking across microservice replicas
-    org.quartz.jobStore.clusterCheckinInterval: 20000
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: ALWAYS # Auto-creates QRTZ_* tables in PostgreSQL
+      platform: postgres
+    properties:
+      org.quartz.scheduler.instanceName: InvoiceScheduler
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.jobStore.useProperties: false
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: true # Enables cluster locking across microservice replicas
+      org.quartz.jobStore.clusterCheckinInterval: 20000
+      # CRITICAL: Forces Quartz to treat bytea columns as binary data, not OID longs
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 
 eureka:
   client:
