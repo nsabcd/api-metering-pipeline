@@ -11,16 +11,17 @@ import java.time.Instant;
 import java.util.List;
 
 @Repository
-public interface UsageEventRepository  extends JpaRepository<UsageEventEntity, String> {
+public interface UsageEventRepository extends JpaRepository<UsageEventEntity, UsageEventEntity.UsageEventId> {
+
     @Query("""
         SELECT new com.metering.aggregation.dto.CustomerUsageSummary(
-            e.customerId,
-            COALESCE(SUM(e.tokensUsed), 0),
-            COUNT(e)
+            u.customerId,
+            COALESCE(SUM(u.totalTokens), 0),
+            COALESCE(SUM(u.totalRequests), 0)
         )
-        FROM UsageEventEntity e
-        WHERE e.timestamp BETWEEN :start AND :end
-        GROUP BY e.customerId
+        FROM CustomerHourlyUsageEntity u
+        WHERE u.bucket BETWEEN :start AND :end
+        GROUP BY u.customerId
     """)
     List<CustomerUsageSummary> findUsageSummaryByPeriod(
             @Param("start") Instant start,

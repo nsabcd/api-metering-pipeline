@@ -1,15 +1,15 @@
 package com.metering.aggregation.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Table(name = "api_usage_events")
+@IdClass(UsageEventEntity.UsageEventId.class)
 public class UsageEventEntity {
     @Id
     private String eventId;
@@ -24,6 +24,7 @@ public class UsageEventEntity {
     private long tokensUsed;
     private int statusCode;
 
+    @Id
     @Column(nullable = false)
     private Instant timestamp;
 
@@ -96,5 +97,32 @@ public class UsageEventEntity {
 
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
+    }
+
+    // Composite Key Class matching (event_id, timestamp)
+    public static class UsageEventId implements Serializable{
+        private String eventId;
+        private Instant timestamp;
+
+        public UsageEventId() {
+        }
+
+        public UsageEventId(String eventId, Instant timestamp) {
+            this.eventId = eventId;
+            this.timestamp = timestamp;
+        }
+
+        @Override
+        public boolean equals(Object o){
+            if (this==o) return true;
+            if(o==null || getClass() != o.getClass()) return false;
+            UsageEventId that = (UsageEventId) o;
+            return Objects.equals(eventId, that.eventId) && Objects.equals(timestamp, that.timestamp);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(eventId, timestamp);
+        }
     }
 }
