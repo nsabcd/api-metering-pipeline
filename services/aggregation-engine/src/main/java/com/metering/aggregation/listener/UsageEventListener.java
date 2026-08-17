@@ -31,7 +31,7 @@ public class UsageEventListener {
         // Fallback to current UTC Instant if incoming record timestamp is null
         Instant eventTimestamp = event.timestamp() != null ? event.timestamp() : Instant.now();
 
-        UsageEventEntity usageEventEntity = new UsageEventEntity(
+        int rowsInserted = repository.saveIdempotent(
                 event.eventId(),
                 event.customerId(),
                 event.apiEndpoint(),
@@ -41,6 +41,8 @@ public class UsageEventListener {
                 eventTimestamp
         );
 
-        repository.save(usageEventEntity);
+        if (rowsInserted == 0) {
+            log.warn("Ignored duplicate usage event: [{}]", event.eventId());
+        }
     }
 }
