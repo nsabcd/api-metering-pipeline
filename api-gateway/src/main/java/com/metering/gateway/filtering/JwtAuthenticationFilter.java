@@ -57,8 +57,10 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                         .getPayload();
 
                 // Inject customer ID claim into downstream header for context propagation
+                String roles = claims.get("roles", String.class);
                 ServerHttpRequest mutatedRequest = request.mutate()
                         .header("X-Customer-Id", claims.getSubject())
+                        .header("X-User-Roles", roles != null ? roles : "ROLE_USER")
                         .build();
 
                 return chain.filter(exchange.mutate().request(mutatedRequest).build());

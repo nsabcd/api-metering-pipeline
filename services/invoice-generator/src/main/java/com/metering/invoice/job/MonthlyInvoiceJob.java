@@ -3,6 +3,7 @@ import com.metering.invoice.client.AggregationEngineClient;
 import com.metering.invoice.dto.CustomerUsageSummary;
 import com.metering.invoice.entity.InvoiceEntity;
 import com.metering.invoice.repository.InvoiceRepository;
+import com.metering.invoice.service.PricingService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,10 +28,14 @@ public class MonthlyInvoiceJob extends QuartzJobBean {
 
     private final InvoiceRepository invoiceRepository;
     private final AggregationEngineClient aggregationClient;
+    private final PricingService pricingService;
 
-    public MonthlyInvoiceJob(InvoiceRepository invoiceRepository, AggregationEngineClient aggregationClient){
+    public MonthlyInvoiceJob(InvoiceRepository invoiceRepository,
+                             AggregationEngineClient aggregationClient,
+                             PricingService pricingService){
         this.invoiceRepository=invoiceRepository;
         this.aggregationClient = aggregationClient;
+        this.pricingService=pricingService;
     }
 
     @Override
@@ -56,8 +61,8 @@ public class MonthlyInvoiceJob extends QuartzJobBean {
                 }
 
                 // 3. Compute total billing amount using exact BigDecimal scale
-                BigDecimal totalAmount = BigDecimal.valueOf(usage.totalTokens())
-                        .multiply(PRICE_PER_TOKEN)
+                BigDecimal totalAmount = pricingService
+                        .calculateCost(usage.customerId(), usage.totalTokens())
                         .setScale(2, RoundingMode.HALF_UP);
 
                 // 4. Construct unique, persistent invoice entity
