@@ -33,5 +33,11 @@ services:
     ports:
       - "9092:9092"
       - "9644:9644"
+    # Redis for API Gateway Rate Limiting
+  redis:
+    image: redis:7-alpine
+    container_name: metering-redis
+    ports:
+      - "6379:6379"
 volumes:
   timescale_data:
